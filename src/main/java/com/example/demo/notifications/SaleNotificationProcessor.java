@@ -1,5 +1,6 @@
 package com.example.demo.notifications;
 
+import com.example.demo.data.SaleAdjustment;
 import com.example.demo.managers.SaleManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

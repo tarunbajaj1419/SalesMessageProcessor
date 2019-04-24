@@ -1,12 +1,9 @@
 package com.example.demo.dao;
 
-import com.example.demo.notifications.SaleAdjustment;
+import com.example.demo.data.SaleAdjustment;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * DAO implementation for {@link SaleAdjustment} instances
@@ -17,6 +14,8 @@ import java.util.Map;
 public class SaleAdjustmentDao {
 
   private Map<String, List<SaleAdjustment>> saleAdjustmentCache = new HashMap<>();
+
+  private Random random = new Random(20000);
 
   /**
    * Clears SaleAdjustment for the given {@code productType}
@@ -52,6 +51,7 @@ public class SaleAdjustmentDao {
    * @param saleAdjustment
    */
   public void save(SaleAdjustment saleAdjustment) {
+    saleAdjustment.setSaleAdjustmentId(random.nextInt()); //Ideally this would be done by Persistence store
     saleAdjustmentCache.computeIfAbsent(saleAdjustment.getProductType(), s -> new ArrayList<>()).add(saleAdjustment);
   }
 }

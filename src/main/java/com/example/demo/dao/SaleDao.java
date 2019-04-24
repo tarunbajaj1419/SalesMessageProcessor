@@ -4,10 +4,7 @@ import com.example.demo.data.Sale;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * DAO implementation for {@link Sale} instances
@@ -18,6 +15,8 @@ import java.util.Map;
 public class SaleDao {
 
   private Map<String, List<Sale>> saleCache = new HashMap<>();
+
+  private Random random = new Random(100);
 
   /**
    * Clears Sales for the given {@code productType}
@@ -54,6 +53,9 @@ public class SaleDao {
    * @param saleValue
    */
   public void recordSale(String productType, BigDecimal saleValue) {
-    saleCache.computeIfAbsent(productType, s -> new ArrayList<>()).add(new Sale(productType, saleValue));
+    Sale sale = new Sale(productType, saleValue);
+    sale.setSaleId(random.nextInt()); //Ideally this would be done by Persistence store
+
+    saleCache.computeIfAbsent(productType, s -> new ArrayList<>()).add(sale);
   }
 }

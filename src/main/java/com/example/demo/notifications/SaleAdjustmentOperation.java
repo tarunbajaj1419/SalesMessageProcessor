@@ -1,6 +1,7 @@
 package com.example.demo.notifications;
 
 import com.example.demo.data.Sale;
+import com.example.demo.data.SaleAdjustment;
 
 import java.math.BigDecimal;
 
