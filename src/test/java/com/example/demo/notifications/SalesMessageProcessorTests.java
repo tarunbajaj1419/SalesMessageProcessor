@@ -15,6 +15,9 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Tests for {@link SaleNotificationProcessor}
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class SalesMessageProcessorTests {

@@ -11,11 +11,15 @@ import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jms.config.JmsListenerEndpointRegistry;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 
+/**
+ * Tests for {@link SaleNotificationProcessor} JMS Listener
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class SalesMessageJMSListenerTests {
@@ -29,13 +33,16 @@ public class SalesMessageJMSListenerTests {
   @Spy
   private SaleManager saleManager;
 
+  @Spy
+  private JmsListenerEndpointRegistry jmsListenerEndpointRegistry;
+
   @Value("${report.frequency:10}")
   private int reportFrequency;
 
   @Value("${message.threshold:50}")
   private int messageThreshold;
 
-  private final String TEST_PRODUCT_TYPE_APPLE = "Apple";
+  private final String TEST_PRODUCT_TYPE_BANANA = "Banana";
   private final String TEST_SALE_VALUE = ".20";
 
   @Before
@@ -46,7 +53,7 @@ public class SalesMessageJMSListenerTests {
 
   @Test
   public void contextLoads() {
-    SaleNotification appleSaleNotification = createSaleNotification(TEST_PRODUCT_TYPE_APPLE, ".20", 1);
+    SaleNotification appleSaleNotification = createSaleNotification(TEST_PRODUCT_TYPE_BANANA, ".20", 1);
     jmsTemplate.convertAndSend("saleNotifications", appleSaleNotification);
   }
 
@@ -55,12 +62,12 @@ public class SalesMessageJMSListenerTests {
 
     int SALE_OCCURRENCES = 1;
 
-    SaleNotification appleSaleNotification = createSaleNotification(TEST_PRODUCT_TYPE_APPLE, TEST_SALE_VALUE, SALE_OCCURRENCES);
+    SaleNotification appleSaleNotification = createSaleNotification(TEST_PRODUCT_TYPE_BANANA, TEST_SALE_VALUE, SALE_OCCURRENCES);
 
     Mockito.doNothing().when(saleManager).recordSale(Mockito.isA(String.class), Mockito.isA(BigDecimal.class));
     Mockito.doNothing().when(saleManager).logSaleReport();
 
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < reportFrequency * 2; i++) {
       saleNotificationProcessor.receiveSaleNotification(appleSaleNotification);
     }
 
@@ -72,7 +79,7 @@ public class SalesMessageJMSListenerTests {
 
     int SALE_OCCURRENCES = 1;
 
-    SaleNotification appleSaleNotification = createSaleNotification(TEST_PRODUCT_TYPE_APPLE, TEST_SALE_VALUE, SALE_OCCURRENCES);
+    SaleNotification appleSaleNotification = createSaleNotification(TEST_PRODUCT_TYPE_BANANA, TEST_SALE_VALUE, SALE_OCCURRENCES);
 
     Mockito.doNothing().when(saleManager).recordSale(Mockito.isA(String.class), Mockito.isA(BigDecimal.class));
     Mockito.doNothing().when(saleManager).logSaleReport();
@@ -84,6 +91,7 @@ public class SalesMessageJMSListenerTests {
 
     Mockito.verify(saleManager, Mockito.times(5)).logSaleReport();
     Mockito.verify(saleManager).logSaleAdjustmentReport();
+    Mockito.verify(jmsListenerEndpointRegistry).stop();
   }
 
   private SaleNotification createSaleNotification(String productType, String saleValue, int saleOccurrences) {

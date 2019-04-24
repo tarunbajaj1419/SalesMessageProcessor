@@ -59,10 +59,10 @@ public class SaleNotificationProcessor {
 
         //Record sale adjustments
         if (isNotBlank(saleNotification.getAdjustmentOperation())) {
-          SaleAdjustment saleAdjustment = SaleAdjustment.from(saleNotification.getAdjustmentOperation(),
-            saleNotification.getAdjustmentValue());
+          SaleAdjustment saleAdjustment = SaleAdjustment.from(saleNotification.getProductType(),
+            saleNotification.getAdjustmentOperation(), saleNotification.getAdjustmentValue());
 
-          saleManager.recordSaleAdjustment(saleNotification.getProductType(), saleAdjustment);
+          saleManager.recordSaleAdjustment(saleAdjustment);
         }
 
         LOGGER.debug("Consumed SaleNotification <{}>", saleNotification);
