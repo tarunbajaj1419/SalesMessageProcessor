@@ -5,7 +5,7 @@ import com.example.demo.data.Sale;
 import java.math.BigDecimal;
 
 /**
- * Created by tarunbajaj on 23/04/2019.
+ * Domain object for Sale adjustment details
  */
 public class SaleAdjustment {
 
@@ -13,11 +13,24 @@ public class SaleAdjustment {
   private final BigDecimal adjustmentValue;
 
 
+  /**
+   * Initialises {@link SaleAdjustment} for the given parameters
+   *
+   * @param saleAdjustmentOperation
+   * @param adjustmentValue
+   */
   public SaleAdjustment(SaleAdjustmentOperation saleAdjustmentOperation, BigDecimal adjustmentValue) {
     this.saleAdjustmentOperation = saleAdjustmentOperation;
     this.adjustmentValue = adjustmentValue;
   }
 
+  /**
+   * Initialises {@link SaleAdjustment} for the given parameters
+   *
+   * @param saleAdjustmentOperation
+   * @param adjustmentValue
+   * @return a new instance of {@link SaleAdjustment}
+   */
   public static SaleAdjustment from(String saleAdjustmentOperation, String adjustmentValue) {
     return new SaleAdjustment(SaleAdjustmentOperation.valueOf(saleAdjustmentOperation), new BigDecimal(adjustmentValue));
   }
@@ -30,6 +43,11 @@ public class SaleAdjustment {
     return adjustmentValue;
   }
 
+  /**
+   * Applies the sale adjustment on the given {@link Sale}
+   *
+   * @param sale
+   */
   public void apply(Sale sale) {
     saleAdjustmentOperation.adjust(sale, adjustmentValue);
   }

@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * Created by tarunbajaj on 23/04/2019.
+ * Manager for {@link Sale} instances.
  */
 @Service
 public class SaleManager {
@@ -24,14 +24,30 @@ public class SaleManager {
   @Autowired
   private SaleDao saleDao;
 
+  /**
+   * Clears Sales for the given {@code productType}
+   *
+   * @param productType
+   */
   public void clearSalesForProductType(String productType) {
     saleDao.clearSalesForProductType(productType);
   }
 
+  /**
+   * Fetches Sales for the given {@code productType}
+   * @param productType
+   * @return list of Sales
+   */
   public List<Sale> fetchSalesForProductType(String productType) {
     return saleDao.fetchForProductType(productType);
   }
 
+  /**
+   * Records Sale adjustments
+   * @param productType
+   * @param saleAdjustment
+   * @throws SaleProcessingException
+   */
   public void recordSaleAdjustment(String productType, SaleAdjustment saleAdjustment) throws SaleProcessingException {
     if (StringUtils.isNoneBlank(productType)) {
       fetchSalesForProductType(productType).forEach(saleAdjustment::apply);
@@ -41,6 +57,12 @@ public class SaleManager {
     }
   }
 
+  /**
+   * Records Sale for the given {@code productType}
+   * @param productType
+   * @param saleValue
+   * @throws SaleProcessingException
+   */
   public void recordSale(String productType, BigDecimal saleValue) throws SaleProcessingException {
     if (StringUtils.isNoneBlank(productType)) {
       saleDao.recordSale(productType, saleValue);
@@ -50,7 +72,13 @@ public class SaleManager {
     }
   }
 
+  /**
+   * Logs a report for the Sales already recorded
+   */
   public void logSaleReport() {
+
+    //Logging on console for the exercise.
+
     LOGGER.info("Logging Sale Report");
     System.out.println("=============================================");
     System.out.println("Product Type\tSale Count\tTotal Sale Vale");
@@ -60,7 +88,11 @@ public class SaleManager {
     });
   }
 
+  /**
+   * Logs a report for the adjustments made to stored sales
+   */
   public void logSaleAdjustmentReport() {
 
+    //Logging on console for the exercise.
   }
 }

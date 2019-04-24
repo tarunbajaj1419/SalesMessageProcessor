@@ -1,7 +1,7 @@
 package com.example.demo.exceptions;
 
 /**
- * Created by tarunbajaj on 24/04/2019.
+ * A specialised exception for Sale processing errors
  */
 public class SaleProcessingException extends Exception {
 

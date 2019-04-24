@@ -5,7 +5,7 @@ import com.example.demo.data.Sale;
 import java.math.BigDecimal;
 
 /**
- * Created by tarunbajaj on 23/04/2019.
+ * List of {@link SaleAdjustment} Operators
  */
 public enum SaleAdjustmentOperation {
 
@@ -28,5 +28,11 @@ public enum SaleAdjustmentOperation {
     }
   };
 
+  /**
+   * Applies the sale adjustment operator on the given {@link Sale}
+   *
+   * @param sale
+   * @param adjustmentValue
+   */
   public abstract void adjust(Sale sale, BigDecimal adjustmentValue);
 }

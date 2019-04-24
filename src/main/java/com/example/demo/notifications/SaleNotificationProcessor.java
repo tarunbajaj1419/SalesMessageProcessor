@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
- * Created by tarunbajaj on 23/04/2019.
+ * Processor class for the {@link SaleNotification} messages
  */
 @Component
 public class SaleNotificationProcessor {
@@ -35,6 +35,11 @@ public class SaleNotificationProcessor {
 
   private int messageCount = 0;
 
+  /**
+   * An implementation of async JMS Listener for {@link SaleNotification} messages
+   *
+   * @param saleNotification
+   */
   @JmsListener(destination = "saleNotifications", containerFactory = "myFactory")
   public void receiveSaleNotification(SaleNotification saleNotification) {
     LOGGER.info("Received SaleNotification <{}>", saleNotification);
@@ -43,6 +48,7 @@ public class SaleNotificationProcessor {
 
       try {
 
+        //Record sales
         if (saleNotification.getNoOfOccurrences() >= 1 && isNotBlank(saleNotification.getProductType())) {
           for (int i = 0; i < saleNotification.getNoOfOccurrences(); i++) {
             saleManager.recordSale(saleNotification.getProductType(), new BigDecimal(saleNotification.getSaleValue()));
@@ -51,6 +57,7 @@ public class SaleNotificationProcessor {
           LOGGER.warn("Failed to process SaleNotification <{}>. Invalid details provided", saleNotification);
         }
 
+        //Record sale adjustments
         if (isNotBlank(saleNotification.getAdjustmentOperation())) {
           SaleAdjustment saleAdjustment = SaleAdjustment.from(saleNotification.getAdjustmentOperation(),
             saleNotification.getAdjustmentValue());
@@ -61,10 +68,12 @@ public class SaleNotificationProcessor {
         LOGGER.debug("Consumed SaleNotification <{}>", saleNotification);
         messageCount++;
 
+        //Log Sale report for messages processed.
         if (messageCount % reportFrequency == 0) {
           saleManager.logSaleReport();
         }
 
+        //Stop message processing and log sale adjustment report
         if (messageCount >= messageThreshold) {
           LOGGER.info("Message Threshold Reached. Pausing Message Processing");
           saleManager.logSaleAdjustmentReport();

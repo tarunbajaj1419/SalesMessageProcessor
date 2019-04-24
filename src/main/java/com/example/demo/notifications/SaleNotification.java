@@ -1,7 +1,9 @@
 package com.example.demo.notifications;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 /**
- * Created by tarunbajaj on 23/04/2019.
+ * External Message Container for a Sale Notification
  */
 public final class SaleNotification {
 
@@ -14,12 +16,28 @@ public final class SaleNotification {
   public SaleNotification() {
   }
 
+  /**
+   * Initialises {@link SaleNotification} With sale details
+   *
+   * @param productType
+   * @param saleValue
+   * @param noOfOccurrences
+   */
   public SaleNotification(String productType, String saleValue, int noOfOccurrences) {
     this.productType = productType;
     this.saleValue = saleValue;
     this.noOfOccurrences = noOfOccurrences;
   }
 
+  /**
+   * Initialises {@link SaleNotification} With sale details and an adjustment operator
+   *
+   * @param productType
+   * @param saleValue
+   * @param noOfOccurrences
+   * @param adjustmentOperation
+   * @param adjustmentValue
+   */
   public SaleNotification(String productType, String saleValue, int noOfOccurrences, String adjustmentOperation, String adjustmentValue) {
     this.productType = productType;
     this.saleValue = saleValue;
@@ -66,5 +84,16 @@ public final class SaleNotification {
 
   public void setAdjustmentValue(String adjustmentValue) {
     this.adjustmentValue = adjustmentValue;
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this)
+      .append("productType", productType)
+      .append("saleValue", saleValue)
+      .append("noOfOccurrences", noOfOccurrences)
+      .append("adjustmentOperation", adjustmentOperation)
+      .append("adjustmentValue", adjustmentValue)
+      .toString();
   }
 }
