@@ -5,7 +5,6 @@ import com.example.demo.dao.SaleDao;
 import com.example.demo.data.Sale;
 import com.example.demo.data.SaleAdjustment;
 import com.example.demo.exceptions.SaleProcessingException;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Manager for {@link Sale} instances.
@@ -82,7 +83,7 @@ public class SaleManager {
    * @throws SaleProcessingException
    */
   public void recordSaleAdjustment(SaleAdjustment saleAdjustment) throws SaleProcessingException {
-    if (StringUtils.isNoneBlank(saleAdjustment.getProductType())) {
+    if (isNotBlank(saleAdjustment.getProductType())) {
       fetchSalesForProductType(saleAdjustment.getProductType()).forEach(saleAdjustment::apply);
       saleAdjustmentDao.save(saleAdjustment);
     } else {
@@ -99,10 +100,10 @@ public class SaleManager {
    * @throws SaleProcessingException
    */
   public void recordSale(String productType, BigDecimal saleValue) throws SaleProcessingException {
-    if (StringUtils.isNoneBlank(productType)) {
+    if (isNotBlank(productType) && saleValue != null) {
       saleDao.recordSale(productType, saleValue);
     } else {
-      LOGGER.warn("Unable to Record Sale. Invalid ProductType");
+      LOGGER.warn("Unable to Record Sale. Invalid Product/Value -> {}:{}", productType, saleValue);
       throw new SaleProcessingException("Invalid ProductType");
     }
   }
