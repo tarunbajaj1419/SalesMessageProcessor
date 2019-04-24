@@ -43,6 +43,7 @@ public class SalesMessageProcessorApplication {
     JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
 
     String TEST_PRODUCT_TYPE_APPLE = "Apple";
+    String TEST_PRODUCT_TYPE_BANANA = "Banana";
     String TEST_SALE_VALUE = ".20";
     String TEST_ADJUSTMENT_OPERATOR_ADD = "ADD";
     String TEST_ADJUSTMENT_OPERATOR_SUBTRACT = "SUBTRACT";
@@ -50,9 +51,9 @@ public class SalesMessageProcessorApplication {
     String ADJUSTMENT_VALUE = ".10";
 
     SaleNotification saleNotification1 = new SaleNotification(TEST_PRODUCT_TYPE_APPLE, TEST_SALE_VALUE, 1);
-    SaleNotification saleNotification2 = new SaleNotification(TEST_PRODUCT_TYPE_APPLE, TEST_SALE_VALUE, 5);
+    SaleNotification saleNotification2 = new SaleNotification(TEST_PRODUCT_TYPE_BANANA, TEST_SALE_VALUE, 5);
     SaleNotification saleNotification3 = new SaleNotification(TEST_PRODUCT_TYPE_APPLE, TEST_SALE_VALUE, 1, TEST_ADJUSTMENT_OPERATOR_ADD, ADJUSTMENT_VALUE);
-    SaleNotification saleNotification4 = new SaleNotification(TEST_PRODUCT_TYPE_APPLE, TEST_SALE_VALUE, 2, TEST_ADJUSTMENT_OPERATOR_SUBTRACT, ADJUSTMENT_VALUE);
+    SaleNotification saleNotification4 = new SaleNotification(TEST_PRODUCT_TYPE_BANANA, TEST_SALE_VALUE, 2, TEST_ADJUSTMENT_OPERATOR_SUBTRACT, ADJUSTMENT_VALUE);
     SaleNotification saleNotification5 = new SaleNotification(TEST_PRODUCT_TYPE_APPLE, TEST_SALE_VALUE, 3, TEST_ADJUSTMENT_OPERATOR_MULTIPLY, ADJUSTMENT_VALUE);
 
     jmsTemplate.convertAndSend("saleNotifications", saleNotification1);
