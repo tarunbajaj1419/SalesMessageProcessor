@@ -22,11 +22,8 @@ public class SaleNotificationProcessor {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SaleNotificationProcessor.class);
 
-  @Autowired
-  private SaleManager saleManager;
-
-  @Autowired
-  private JmsListenerEndpointRegistry jmsListenerEndpointRegistry;
+  private final SaleManager saleManager;
+  private final JmsListenerEndpointRegistry jmsListenerEndpointRegistry;
 
   @Value("${report.frequency:10}")
   private int reportFrequency;
@@ -35,6 +32,18 @@ public class SaleNotificationProcessor {
   private int messageThreshold;
 
   private int messageCount = 0;
+
+  /**
+   * Initialises a new {@link SaleNotificationProcessor} with the given parameters
+   *
+   * @param saleManager
+   * @param jmsListenerEndpointRegistry
+   */
+  @Autowired
+  public SaleNotificationProcessor(SaleManager saleManager, JmsListenerEndpointRegistry jmsListenerEndpointRegistry) {
+    this.saleManager = saleManager;
+    this.jmsListenerEndpointRegistry = jmsListenerEndpointRegistry;
+  }
 
   /**
    * An implementation of async JMS Listener for {@link SaleNotification} messages

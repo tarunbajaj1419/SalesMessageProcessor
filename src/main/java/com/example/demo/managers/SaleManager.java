@@ -22,11 +22,20 @@ public class SaleManager {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SaleManager.class);
 
-  @Autowired
-  private SaleDao saleDao;
+  private final SaleDao saleDao;
+  private final SaleAdjustmentDao saleAdjustmentDao;
 
+  /**
+   * Initialises a new {@link SaleManager} with the given parameters
+   *
+   * @param saleDao
+   * @param saleAdjustmentDao
+   */
   @Autowired
-  private SaleAdjustmentDao saleAdjustmentDao;
+  public SaleManager(SaleDao saleDao, SaleAdjustmentDao saleAdjustmentDao) {
+    this.saleDao = saleDao;
+    this.saleAdjustmentDao = saleAdjustmentDao;
+  }
 
   /**
    * Clears Sales for the given {@code productType}
@@ -35,6 +44,25 @@ public class SaleManager {
    */
   public void clearSalesForProductType(String productType) {
     saleDao.clearSalesForProductType(productType);
+  }
+
+  /**
+   * Clears SaleAdjustments for the given {@code productType}
+   *
+   * @param productType
+   */
+  public void clearSalesAdjustmentsForProductType(String productType) {
+    saleAdjustmentDao.clearSaleAdjustmentsForProductType(productType);
+  }
+
+  /**
+   * Fetches SaleAdjustments for the given {@code productType}
+   *
+   * @param productType
+   * @return list of Sales
+   */
+  public List<SaleAdjustment> fetchSaleAdjustmentForProductType(String productType) {
+    return saleAdjustmentDao.fetchForProductType(productType);
   }
 
   /**
