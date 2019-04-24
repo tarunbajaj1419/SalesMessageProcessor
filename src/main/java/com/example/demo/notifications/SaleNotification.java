@@ -4,6 +4,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * External Message Container for a Sale Notification
+ *
+ * Using primitive fields since the message is expected to come from an external source
  */
 public final class SaleNotification {
 
