@@ -76,4 +76,20 @@ public class SaleNotificationProcessor {
       }
     }
   }
+
+  public int getReportFrequency() {
+    return reportFrequency;
+  }
+
+  public void setReportFrequency(int reportFrequency) {
+    this.reportFrequency = reportFrequency;
+  }
+
+  public int getMessageThreshold() {
+    return messageThreshold;
+  }
+
+  public void setMessageThreshold(int messageThreshold) {
+    this.messageThreshold = messageThreshold;
+  }
 }

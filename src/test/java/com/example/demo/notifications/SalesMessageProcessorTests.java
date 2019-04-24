@@ -1,18 +1,12 @@
-package com.example.demo;
+package com.example.demo.notifications;
 
 import com.example.demo.data.Sale;
 import com.example.demo.managers.SaleManager;
-import com.example.demo.notifications.SaleNotification;
-import com.example.demo.notifications.SaleNotificationProcessor;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
@@ -23,22 +17,13 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class SalesMessageProcessorApplicationTests {
-
-  @Autowired
-  private JmsTemplate jmsTemplate;
+public class SalesMessageProcessorTests {
 
   @Autowired
   private SaleNotificationProcessor saleNotificationProcessor;
 
-  @Spy
+  @Autowired
   private SaleManager saleManager;
-
-  @Value("${report.frequency:10}")
-  private int reportFrequency;
-
-  @Value("${message.threshold:50}")
-  private int messageThreshold;
 
   private final String TEST_PRODUCT_TYPE_APPLE = "Apple";
   private final String TEST_SALE_VALUE = ".20";
@@ -50,12 +35,6 @@ public class SalesMessageProcessorApplicationTests {
   @After
   public void tearDown() throws Exception {
     saleManager.clearSalesForProductType(TEST_PRODUCT_TYPE_APPLE);
-  }
-
-  @Test
-  public void contextLoads() {
-    SaleNotification appleSaleNotification = createSaleNotification(TEST_PRODUCT_TYPE_APPLE, ".20", 1);
-    jmsTemplate.convertAndSend("saleNotifications", appleSaleNotification);
   }
 
   @Test
@@ -167,48 +146,6 @@ public class SalesMessageProcessorApplicationTests {
     assertEquals(SALE_OCCURRENCES, sales.size());
     assertTrue(sales.stream().allMatch(sale -> sale.getValue().equals(new BigDecimal(TEST_SALE_VALUE))));
     assertTrue(sales.stream().allMatch(sale -> sale.getProductType().equals(TEST_PRODUCT_TYPE_APPLE)));
-  }
-
-
-  @Test
-  public void testSaleReportLogging() {
-
-    int SALE_OCCURRENCES = 1;
-
-    SaleNotification appleSaleNotification = createSaleNotification(TEST_PRODUCT_TYPE_APPLE, TEST_SALE_VALUE, SALE_OCCURRENCES);
-
-    for (int i = 0; i < 20; i++) {
-      saleNotificationProcessor.receiveSaleNotification(appleSaleNotification);
-    }
-
-    List<Sale> sales = saleManager.fetchSalesForProductType(appleSaleNotification.getProductType());
-
-    assertEquals(20, sales.size());
-    assertTrue(sales.stream().allMatch(sale -> sale.getValue().equals(new BigDecimal(TEST_SALE_VALUE))));
-    assertTrue(sales.stream().allMatch(sale -> sale.getProductType().equals(TEST_PRODUCT_TYPE_APPLE)));
-
-    Mockito.verify(saleManager).logSaleReport();
-  }
-
-  @Test
-  public void testSaleAdjustmentReportLogging() {
-//    SaleManager sm = Mockito.spy(saleManager);
-
-    int SALE_OCCURRENCES = 1;
-
-    SaleNotification appleSaleNotification = createSaleNotification(TEST_PRODUCT_TYPE_APPLE, TEST_SALE_VALUE, SALE_OCCURRENCES);
-
-    for (int i = 0; i < messageThreshold + 5; i++) {
-      saleNotificationProcessor.receiveSaleNotification(appleSaleNotification);
-    }
-
-    List<Sale> sales = saleManager.fetchSalesForProductType(appleSaleNotification.getProductType());
-
-    assertEquals(messageThreshold, sales.size());
-    assertTrue(sales.stream().allMatch(sale -> sale.getValue().equals(new BigDecimal(TEST_SALE_VALUE))));
-    assertTrue(sales.stream().allMatch(sale -> sale.getProductType().equals(TEST_PRODUCT_TYPE_APPLE)));
-
-    Mockito.verify(saleManager).logSaleAdjustmentReport();
   }
 
   private SaleNotification createSaleNotification(String productType, String saleValue, int saleOccurrences) {
